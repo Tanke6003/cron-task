@@ -14,8 +14,12 @@
   "author": "Tanke6003 <github.com/tanke6003>",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.5.4",
-    "@types/node": "^22.1.0"
+    "@types/node": "^22.1.0",
+    "@types/uuid": "^10.0.0",
+    "os": "^0.1.2",
+    "typescript": "^5.5.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "uuid": "^10.0.0"
+  }
 }

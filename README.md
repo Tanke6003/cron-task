@@ -1,26 +1,66 @@
-# Cron-task
+# cron-task
 
-`TaskScheduler` es una clase para gestionar y programar tareas en Node.js. Puedes usarla para ejecutar tareas a intervalos regulares especificados en milisegundos o con expresiones cron.
+`cron-task` is a module for scheduling tasks at specific time intervals using cron expressions or milliseconds. You can easily add, remove, start, and stop tasks.
 
 ## Installation
 
+To install `cron-task`, run the following command:
+
 ```bash
-npm i cron-task
+npm install cron-task
 ```
+
 ## Usage
-### Importing
-```typescript
-import { TaskScheduler, Task } from 'task-scheduler';
-```
-### Defining a task
-Create a task object that follows the Task interface:
-```typescript
-const myTask: Task = {
-  name: 'exampleTask',
-  category: 'exampleCategory', // category is a optional property
-  interval: '*/5 * * * *', // Cron expression to run every 5 minutes
+
+```javascript
+const { CronTaskScheduler } = require('cron-task');
+
+// Create an instance of the scheduler
+const scheduler = new CronTaskScheduler();
+
+// Add a task
+scheduler.addTask({
+  name: 'myTask',
+  interval: '*/5 * * * *', // Run every 5 minutes
   onTick: () => {
-    console.log('Task executed!');
-  }
-};
+    console.log('Task executed');
+    // Task logic here
+  },
+});
+
+// Start the task by name
+scheduler.startTaskByName('myTask');
+
+// Stop the task by name
+scheduler.stopTaskByName('myTask');
 ```
+
+## API
+
+### `addTask(task: Task): void`
+
+Adds a new task to the scheduler.
+
+- `task`: Object describing the task with the following properties:
+  - `name`: Unique name for the task.
+  - `category` (optional): Task category.
+  - `interval`: Interval in milliseconds or cron expression.
+  - `onTick`: Function executed at each interval.
+
+### Other methods
+
+- `removeTaskByName(name: string): void`
+- `removeTasksByCategory(category: string): void`
+- `removeAllTasks(): void`
+- `getTasks(): Task[]`
+- `getTasksByCategory(category: string): Task[]`
+- `getTasksByName(name: string): Task[]`
+- `startTaskByName(name: string): void`
+- `stopTaskByName(name: string): void`
+- `stopAllTasksByCategory(category: string): void`
+
+## Contribution
+
+If you encounter any issues or have suggestions, feel free to open an issue or submit a pull request.
+
+Thanks for contributing!
