@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'; // You can use this library to generate unique IDs
 
 interface Task {
-    id: string; // Unique identifier for the task
+    id?: string; // Unique identifier for the task
     name: string;
     category?: string;
     interval: number | string; // Interval in milliseconds or cron expression
@@ -27,7 +27,8 @@ class CronTaskScheduler {
             const newTask: Task = { ...task, id }; // Create the task with the generated ID
             this.tasks.push(newTask);
             const intervalId = setInterval(newTask.onTick, intervalMs);
-            this.intervals[newTask.id] = intervalId;
+            this.intervals[newTask.id?? ""] = intervalId;
+            console.log('Task added:', newTask);
 
             return newTask; // Return the newly added task
         } catch (error: any) {
@@ -61,8 +62,8 @@ class CronTaskScheduler {
             const task = this.tasks.find(task => task.name === name);
             if (!task) throw new Error('Task not found');
 
-            clearInterval(this.intervals[task.id]);
-            delete this.intervals[task.id];
+            clearInterval(this.intervals[task.id?? ""]);	
+            delete this.intervals[task.id?? ""];    
             this.tasks = this.tasks.filter(t => t.id !== task.id);
         } catch (error: any) {
             throw new Error('Error removing task by name: ' + error.message);
@@ -72,7 +73,7 @@ class CronTaskScheduler {
     public removeTasksByCategory(category: string): void {
         try {
             const tasksToRemove = this.tasks.filter(task => task.category === category);
-            tasksToRemove.forEach(task => this.removeTaskById(task.id));
+            tasksToRemove.forEach(task => this.removeTaskById(task.id?? ""));
         } catch (error: any) {
             throw new Error('Error removing tasks by category: ' + error.message);
         }
@@ -80,7 +81,7 @@ class CronTaskScheduler {
 
     public removeAllTasks(): void {
         try {
-            this.tasks.forEach(task => clearInterval(this.intervals[task.id]));
+            this.tasks.forEach(task => clearInterval(this.intervals[task.id?? ""]));
             this.tasks = [];
             this.intervals = {};
         } catch (error: any) {
@@ -113,13 +114,13 @@ class CronTaskScheduler {
             const task = this.tasks.find(task => task.name === name);
             if (!task) throw new Error('Task not found');
 
-            if (this.intervals[task.id]) return; // Task is already running
+            if (this.intervals[task.id??""]) return; 
 
             const intervalMs = typeof task.interval === 'string' ? this.cronToMs(task.interval) : task.interval;
             if (intervalMs <= 0) throw new Error('Invalid interval');
 
             const intervalId = setInterval(task.onTick, intervalMs);
-            this.intervals[task.id] = intervalId;
+            this.intervals[task.id??""] = intervalId;
         } catch (error: any) {
             throw new Error('Error starting task by name: ' + error.message);
         }
@@ -130,8 +131,8 @@ class CronTaskScheduler {
             const task = this.tasks.find(task => task.name === name);
             if (!task) throw new Error('Task not running');
 
-            clearInterval(this.intervals[task.id]);
-            delete this.intervals[task.id];
+            clearInterval(this.intervals[task.id??""]);
+            delete this.intervals[task.id??""];
         } catch (error: any) {
             throw new Error('Error stopping task by name: ' + error.message);
         }
@@ -158,12 +159,12 @@ class CronTaskScheduler {
     public startAllTasks(): void {
         try {
             this.tasks.forEach(task => {
-                if (!this.intervals[task.id]) {
+                if (!this.intervals[task.id??""]) {
                     const intervalMs = typeof task.interval === 'string' ? this.cronToMs(task.interval) : task.interval;
                     if (intervalMs <= 0) throw new Error('Invalid interval');
 
                     const intervalId = setInterval(task.onTick, intervalMs);
-                    this.intervals[task.id] = intervalId;
+                    this.intervals[task.id??""] = intervalId;
                 }
             });
         } catch (error: any) {

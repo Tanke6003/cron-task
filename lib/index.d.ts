@@ -1,13 +1,16 @@
 interface Task {
+    id?: string;
     name: string;
     category?: string;
     interval: number | string;
     onTick: () => void;
 }
-declare class TaskScheduler {
+declare class CronTaskScheduler {
     private tasks;
     private intervals;
-    addTask(task: Task): void;
+    addTask(task: Omit<Task, 'id'>): Task;
+    removeTaskById(id: string): void;
+    getTaskById(id: string): Task | undefined;
     removeTaskByName(name: string): void;
     removeTasksByCategory(category: string): void;
     removeAllTasks(): void;
@@ -22,4 +25,4 @@ declare class TaskScheduler {
     stopAllTasks(): void;
     private cronToMs;
 }
-export { TaskScheduler, Task };
+export { CronTaskScheduler, Task };
