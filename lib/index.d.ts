@@ -1,15 +1,11 @@
-interface Task {
-    id?: string;
-    name: string;
-    category?: string;
-    interval: number | string;
-    onTick: () => void;
-}
+import { Task } from './task';
 declare class CronTaskScheduler {
     private tasks;
     private intervals;
-    addTask(task: Omit<Task, 'id'>): Task;
+    addTask(task: Omit<Task, 'id' | 'status'>): Task;
     removeTaskById(id: string): void;
+    updateTaskById(id: string, task: Omit<Task, 'id'>): Task;
+    startTaskById(id: string): void;
     getTaskById(id: string): Task | undefined;
     removeTaskByName(name: string): void;
     removeTasksByCategory(category: string): void;

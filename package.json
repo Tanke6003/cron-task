@@ -9,7 +9,10 @@
   },
   "keywords": [
     "cron",
-    "task"
+    "task",
+    "node",	
+    "task-scheduler",
+    "scheduler"
   ],
   "author": "Tanke6003 <github.com/tanke6003>",
   "license": "GPL-3.0",
