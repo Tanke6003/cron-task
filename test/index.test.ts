@@ -1,4 +1,5 @@
-import { beforeEach, describe, it, expect } from 'node:test';
+import { beforeEach, describe, it } from 'node:test';
+import expect from 'node:test';
 import { CronTaskScheduler, Task } from '../src/index';
 
 describe('CronTaskScheduler', () => {
@@ -10,9 +11,10 @@ describe('CronTaskScheduler', () => {
 
     describe('addTask', () => {
         it('should add a task to the scheduler', () => {
-            const task: Omit<Task, 'id' | 'status'> & { cronExpression: string } = {
+            const task: Omit<Task, 'id' | 'status'> & { cronExpression: string, interval: number | string } = {
                 name: 'Task 1',
                 category: 'Category 1',
+                interval: '* * * * *',
                 onTick: () => {
                     console.log('Task 1 executed');
                 },
