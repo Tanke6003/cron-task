@@ -200,44 +200,49 @@ class CronTaskScheduler {
         try {
             const parts = cronExp.split(' ');
             if (parts.length !== 5) throw new Error('Invalid cron expression');
-
-            const [minute, hour, dayOfMonth, month, dayOfWeek] = parts.map(p => p === '*' ? null : parseInt(p, 10));
-
+    
+            const [minute, hour, dayOfMonth, month, dayOfWeek] = parts.map(p => {
+                if (p === '*') return null;
+                if (p.includes('/')) return parseInt(p.split('/')[1], 10); // Handle step values like '*/5'
+                return parseInt(p, 10);
+            });
+    
             if (minute !== null && hour === null && dayOfMonth === null && month === null && dayOfWeek === null) {
-                // Execute every specified minute
+                // Handle cases like '*/5 * * * *' - Execute every specified minute interval
                 return minute * 60 * 1000;
             }
-
+    
             if (minute === null && hour !== null && dayOfMonth === null && month === null && dayOfWeek === null) {
                 // Execute every specified hour
                 return hour * 60 * 60 * 1000;
             }
-
+    
             if (minute !== null && hour !== null && dayOfMonth === null && month === null && dayOfWeek === null) {
                 // Execute every specified hour and minute
                 return (hour * 60 * 60 * 1000) + (minute * 60 * 1000);
             }
-
+    
             if (minute === null && hour === null && dayOfMonth !== null && month === null && dayOfWeek === null) {
                 // Execute every specified day
                 return dayOfMonth * 24 * 60 * 60 * 1000;
             }
-
+    
             if (minute === null && hour === null && dayOfMonth === null && month !== null && dayOfWeek === null) {
                 // Execute every specified month
                 return month * 30 * 24 * 60 * 60 * 1000;
             }
-
+    
             if (minute === null && hour === null && dayOfMonth === null && month === null && dayOfWeek !== null) {
                 // Execute every specified day of the week
                 return dayOfWeek * 7 * 24 * 60 * 60 * 1000;
             }
-
+    
             throw new Error('Unsupported cron expression');
         } catch (error: any) {
             throw new Error('Error converting cron expression to milliseconds: ' + error.message);
         }
     }
+    
 }
 
 export { CronTaskScheduler, Task };
