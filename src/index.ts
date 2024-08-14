@@ -11,8 +11,7 @@ class CronTaskScheduler {
             if (!task.name || !task.onTick) {
                 throw new Error('Task must have a name and an onTick function');
             }
-
-            const id = uuidv4(); // Generate a unique ID for the task
+            const id = uuidv4(); 
             const intervalMs = typeof task.interval === 'string' ? this.cronToMs(task.interval) : task.interval;
             if (intervalMs <= 0) {
                 throw new Error('Invalid interval');

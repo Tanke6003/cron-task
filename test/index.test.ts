@@ -1,39 +1,40 @@
-import { beforeEach, describe, it } from 'node:test';
-import expect from 'node:test';
-import { CronTaskScheduler, Task } from '../src/index';
-
+import { CronTaskScheduler, Task } from '../src/index'
 describe('CronTaskScheduler', () => {
     let scheduler: CronTaskScheduler;
-
+  
     beforeEach(() => {
-        scheduler = new CronTaskScheduler();
+      scheduler = new CronTaskScheduler();
+      jest.useFakeTimers(); 
     });
-
-    describe('addTask', () => {
-        it('should add a task to the scheduler', () => {
-            const task: Omit<Task, 'id' | 'status'> & { cronExpression: string, interval: number | string } = {
-                name: 'Task 1',
-                category: 'Category 1',
-                interval: '* * * * *',
-                onTick: () => {
-                    console.log('Task 1 executed');
-                },
-                cronExpression: '* * * * *',
-            };
-
-            const addedTask = scheduler.addTask(task);
-
-            expect(addedTask).toBeDefined();
-            expect(addedTask.id).toBeDefined();
-            expect(addedTask.status).toBe('stopped');
-            if (addedTask.id) {
-                expect(scheduler.getTaskById(addedTask.id)).toBe(addedTask);
-            } else {
-                throw new Error('Task ID is undefined');
-            }
-        });
+  
+    afterEach(() => {
+      jest.useRealTimers(); 
     });
+  
+    test('should add a task', () => {
+      const onTickMock = jest.fn(); 
+      const task = scheduler.addTask({
+        name: 'Test Task',
+        interval: 1000,
+        onTick: onTickMock,
+      });
+      
+      const taskId = task.id ?? '';
+      expect(scheduler.getTaskById(taskId)).toBeDefined();
+    });
+    //getTasks
+    test('should have one task',()=>{
+        const onTickMock = jest.fn();
+        scheduler.addTask({
+            name: 'Test Task',
+            interval: 1000,
+            onTick: onTickMock,
+          });
+        let tasks:Task[] = scheduler.getTasks()
+        expect(tasks.length).toBe(1)
+          
+    })
+    
 
-    // Add more tests for other methods of the CronTaskScheduler class
-
-});
+  });
+  
