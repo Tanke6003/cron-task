@@ -17,6 +17,8 @@
   ],
   "author": "Tanke6003 <github.com/tanke6003>",
   "license": "GPL-3.0",
+  "repository": "Tanke6003/cron-task",
+  "homepage": "https://github.com/Tanke6003/cron-task#readme",
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^22.1.0",
