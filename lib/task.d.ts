@@ -3,6 +3,6 @@ export interface Task {
     name: string;
     category?: string;
     interval: number | string;
-    onTick: () => void;
+    onTick: () => void | Promise<void>;
     status?: boolean;
 }

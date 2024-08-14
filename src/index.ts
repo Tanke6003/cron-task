@@ -21,8 +21,6 @@ class CronTaskScheduler {
             this.tasks.push(newTask);
             const intervalId = setInterval(newTask.onTick, intervalMs);
             this.intervals[newTask.id?? ""] = intervalId;
-            console.log('Task added:', newTask);
-
             return newTask; 
         } catch (error: any) {
             throw new Error('Error adding task: ' + error.message);
@@ -43,8 +41,9 @@ class CronTaskScheduler {
         try {
             const index = this.tasks.findIndex(task => task.id === id);
             if (index === -1) throw new Error('Task not found');
-
             const updatedTask = { ...task, id };
+            if(updatedTask.status == null)
+                updatedTask.status = this.tasks[index].status;
             this.tasks[index] = updatedTask;
             const intervalMs = typeof updatedTask.interval === 'string' ? this.cronToMs(updatedTask.interval) : updatedTask.interval;
             if (intervalMs <= 0) throw new Error('Invalid interval');
@@ -187,14 +186,22 @@ class CronTaskScheduler {
     }
     public stopAllTasks(): void {
         try {
-            Object.keys(this.intervals).forEach(id =>{
-
-                clearInterval(this.intervals[id])});
-            this.intervals = {};
+            this.tasks.forEach(task => {
+                // Set the status of each task to false
+                task.status = false;
+    
+                // Clear the interval associated with the task
+                if (this.intervals[task.id ?? ""]) {
+                    clearInterval(this.intervals[task.id ?? ""]);
+                    delete this.intervals[task.id ?? ""];
+                }
+            });
+            this.intervals = {}; // Clear all intervals
         } catch (error: any) {
             throw new Error('Error stopping all tasks: ' + error.message);
         }
     }
+    
     private cronToMs(cronExp: string): number {
         try {
             const parts = cronExp.split(' ');
@@ -234,6 +241,10 @@ class CronTaskScheduler {
             if (minute === null && hour === null && dayOfMonth === null && month === null && dayOfWeek !== null) {
                 // Execute every specified day of the week
                 return dayOfWeek * 7 * 24 * 60 * 60 * 1000;
+            }
+            if(minute === null && hour === null && dayOfMonth === null && month === null && dayOfWeek === null)
+            {
+                return 60000
             }
     
             throw new Error('Unsupported cron expression');
