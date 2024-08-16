@@ -1,6 +1,6 @@
 {
   "name": "cron-task",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": " A simple cron task library for node.js with some useful features. Like assigning a name to task and getting the task by name. or category to task and getting the task by category.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,6 +17,8 @@
   ],
   "author": "Tanke6003 <github.com/tanke6003>",
   "license": "GPL-3.0",
+  "repository": "Tanke6003/cron-task",
+  "homepage": "https://github.com/Tanke6003/cron-task#readme",
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^22.1.0",
